@@ -22,18 +22,19 @@ class FBAuth implements FBAuthImpl {
   Future<AuthUser> login(String username, String password) async {
     await _setPersistenceWeb(_auth);
     try {
-      final _result =
+      final UserCredential result =
           await _auth.signInWithEmailAndPassword(username, password);
-      if (_result != null && _result?.user != null) {
-        final _user = AuthUser(
-          uid: _result.user.uid,
-          displayName: _result.user.displayName,
-          email: _result.user?.email,
-          isAnonymous: _result.user.isAnonymous,
-          isEmailVerified: _result.user.emailVerified,
-          photoUrl: _result.user.photoURL,
+      if (result != null && result?.user != null) {
+        final user = AuthUser(
+          uid: result.user.uid,
+          displayName: result.user.displayName,
+          email: result.user?.email,
+          isAnonymous: result.user.isAnonymous,
+          isEmailVerified: result.user.emailVerified,
+          photoUrl: result.user.photoURL,
+          user: result.user
         );
-        return _user;
+        return user;
       }
     } catch (e) {
       print('FBAuthUtils -> _loginWeb -> $e');
@@ -47,6 +48,7 @@ class FBAuth implements FBAuthImpl {
     try {
       final _result = await _auth.signInAnonymously();
       if (_result != null && _result?.user != null) {
+      
         final _user = AuthUser(
           uid: _result.user.uid,
           displayName: _result.user.displayName,
@@ -54,6 +56,7 @@ class FBAuth implements FBAuthImpl {
           isAnonymous: _result.user.isAnonymous,
           isEmailVerified: _result.user.emailVerified,
           photoUrl: _result.user.photoURL,
+          user: _result.user,
         );
         return _user;
       }
@@ -84,6 +87,7 @@ class FBAuth implements FBAuthImpl {
         isAnonymous: user.isAnonymous,
         isEmailVerified: user.emailVerified,
         photoUrl: user.photoURL,
+        user: user
       );
       return _user;
     });
@@ -95,6 +99,7 @@ class FBAuth implements FBAuthImpl {
     try {
       final _result = _auth.currentUser;
       if (_result != null) {
+
         final _user = AuthUser(
           uid: _result.uid,
           displayName: _result.displayName,
@@ -102,6 +107,7 @@ class FBAuth implements FBAuthImpl {
           isAnonymous: _result.isAnonymous,
           isEmailVerified: _result.emailVerified,
           photoUrl: _result.photoURL,
+          user: _result,
         );
         return _user;
       }
